@@ -20,19 +20,20 @@
     var CONFIG = {"hostname":"zhouleyi03.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="开发进度  配置环境 [FINISHED 20231016]  DDA 直线绘制算法 [FINISHED 20231017]  Brensenham 直线绘制算法（二维）  三角形的光栅化  Z-Buffer  坐标系统（Coordination System）  透视投影（Projection）  摄像机（Camera）  Brensenham 直线绘制算法（三维）    着色器（Shaders">
+  <meta name="description" content="前言做计软作业的时候遇到要求计算 ASL 的题目。作为 2023 年的人，用草稿纸一个个列写还是太原始了，于是我决定用 python 来计算答案。虽然，为了验证算法的正确性，还是不得已手算了一遍…… 代码12345678910111213141516171819202122232425262728293031323334353637hashmap_length &#x3D; 15data &#x3D; [19, 14">
 <meta property="og:type" content="article">
-<meta property="og:title" content="从零开始的软渲染器（Python）- 开发日志">
-<meta property="og:url" content="https://zhouleyi03.github.io/2023/10/16/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E8%BD%AF%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88Python%EF%BC%89-%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/index.html">
+<meta property="og:title" content="基于除留取余 &amp; 线性探测的散列表的 ASL 计算程序">
+<meta property="og:url" content="https://zhouleyi03.github.io/2023/11/04/%E5%9F%BA%E4%BA%8E%E9%99%A4%E7%95%99%E5%8F%96%E4%BD%99-%E7%BA%BF%E6%80%A7%E6%8E%A2%E6%B5%8B%E7%9A%84%E6%95%A3%E5%88%97%E8%A1%A8%E7%9A%84-ASL-%E8%AE%A1%E7%AE%97%E7%A8%8B%E5%BA%8F/index.html">
 <meta property="og:site_name" content="zhouleyi03&#39;s blog">
-<meta property="og:description" content="开发进度  配置环境 [FINISHED 20231016]  DDA 直线绘制算法 [FINISHED 20231017]  Brensenham 直线绘制算法（二维）  三角形的光栅化  Z-Buffer  坐标系统（Coordination System）  透视投影（Projection）  摄像机（Camera）  Brensenham 直线绘制算法（三维）    着色器（Shaders">
+<meta property="og:description" content="前言做计软作业的时候遇到要求计算 ASL 的题目。作为 2023 年的人，用草稿纸一个个列写还是太原始了，于是我决定用 python 来计算答案。虽然，为了验证算法的正确性，还是不得已手算了一遍…… 代码12345678910111213141516171819202122232425262728293031323334353637hashmap_length &#x3D; 15data &#x3D; [19, 14">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-10-16T13:28:07.000Z">
-<meta property="article:modified_time" content="2023-10-29T13:20:11.278Z">
+<meta property="article:published_time" content="2023-11-04T13:02:48.000Z">
+<meta property="article:modified_time" content="2023-11-04T13:12:33.517Z">
 <meta property="article:author" content="zhouleyi03">
+<meta property="article:tag" content="python">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://zhouleyi03.github.io/2023/10/16/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E8%BD%AF%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88Python%EF%BC%89-%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/">
+<link rel="canonical" href="https://zhouleyi03.github.io/2023/11/04/%E5%9F%BA%E4%BA%8E%E9%99%A4%E7%95%99%E5%8F%96%E4%BD%99-%E7%BA%BF%E6%80%A7%E6%8E%A2%E6%B5%8B%E7%9A%84%E6%95%A3%E5%88%97%E8%A1%A8%E7%9A%84-ASL-%E8%AE%A1%E7%AE%97%E7%A8%8B%E5%BA%8F/">
 
 
 <script id="page-configurations">
@@ -45,7 +46,7 @@
   };
 </script>
 
-  <title>从零开始的软渲染器（Python）- 开发日志 | zhouleyi03's blog</title>
+  <title>基于除留取余 & 线性探测的散列表的 ASL 计算程序 | zhouleyi03's blog</title>
   
 
 
@@ -150,7 +151,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://zhouleyi03.github.io/2023/10/16/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E8%BD%AF%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88Python%EF%BC%89-%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/">
+    <link itemprop="mainEntityOfPage" href="https://zhouleyi03.github.io/2023/11/04/%E5%9F%BA%E4%BA%8E%E9%99%A4%E7%95%99%E5%8F%96%E4%BD%99-%E7%BA%BF%E6%80%A7%E6%8E%A2%E6%B5%8B%E7%9A%84%E6%95%A3%E5%88%97%E8%A1%A8%E7%9A%84-ASL-%E8%AE%A1%E7%AE%97%E7%A8%8B%E5%BA%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -163,7 +164,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          从零开始的软渲染器（Python）- 开发日志
+          基于除留取余 & 线性探测的散列表的 ASL 计算程序
         </h1>
 
         <div class="post-meta">
@@ -172,23 +173,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2023-10-16 21:28:07" itemprop="dateCreated datePublished" datetime="2023-10-16T21:28:07+08:00">2023-10-16</time>
+              <time title="Created: 2023-11-04 21:02:48 / Modified: 21:12:33" itemprop="dateCreated datePublished" datetime="2023-11-04T21:02:48+08:00">2023-11-04</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-10-29 21:20:11" itemprop="dateModified" datetime="2023-10-29T21:20:11+08:00">2023-10-29</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机图形学</span></a>
+                  <a href="/categories/%E5%85%B6%E4%BB%96/" itemprop="url" rel="index"><span itemprop="name">其他</span></a>
                 </span>
             </span>
 
@@ -203,22 +198,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="开发进度"><a href="#开发进度" class="headerlink" title="开发进度"></a>开发进度</h3><ul>
-<li><input checked="" disabled="" type="checkbox"> 配置环境 <em><strong>[FINISHED 20231016]</strong></em></li>
-<li><input checked="" disabled="" type="checkbox"> DDA 直线绘制算法 <em><strong>[FINISHED 20231017]</strong></em></li>
-<li><input disabled="" type="checkbox"> Brensenham 直线绘制算法（二维）</li>
-<li><input disabled="" type="checkbox"> 三角形的光栅化</li>
-<li><input disabled="" type="checkbox"> Z-Buffer</li>
-<li><input disabled="" type="checkbox"> 坐标系统（Coordination System）</li>
-<li><input disabled="" type="checkbox"> 透视投影（Projection）</li>
-<li><input disabled="" type="checkbox"> 摄像机（Camera）<ul>
-<li><input disabled="" type="checkbox"> Brensenham 直线绘制算法（三维）</li>
-</ul>
-</li>
-<li><input disabled="" type="checkbox"> 着色器（Shaders）</li>
-<li><input disabled="" type="checkbox"> 阴影贴图（Shadow Mapping）</li>
-<li><input disabled="" type="checkbox"> 环境光遮蔽（Ambient Occlusion）</li>
-<li><input disabled="" type="checkbox"> 光线追踪（Raytracing）</li>
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>做计软作业的时候遇到要求计算 ASL 的题目。作为 2023 年的人，用草稿纸一个个列写还是太原始了，于是我决定用 python 来计算答案。<br>虽然，为了验证算法的正确性，还是不得已手算了一遍……</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">hashmap_length = <span class="number">15</span></span><br><span class="line">data = [<span class="number">19</span>, <span class="number">14</span>, <span class="number">23</span>, <span class="number">1</span>, <span class="number">68</span>, <span class="number">20</span>, <span class="number">84</span>, <span class="number">27</span>, <span class="number">55</span>, <span class="number">11</span>, <span class="number">10</span>, <span class="number">79</span>]</span><br><span class="line">H = <span class="keyword">lambda</span> k: k % <span class="number">13</span></span><br><span class="line">hashmap = [-<span class="number">1</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(hashmap_length)]</span><br><span class="line">ASL = <span class="number">0</span></span><br><span class="line">ASL_unsucc = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># construct the hashmap &amp; calculate ASL</span></span><br><span class="line"><span class="keyword">for</span> ele <span class="keyword">in</span> data:</span><br><span class="line">    index = H(ele)</span><br><span class="line">    cnt = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> hashmap[index] != -<span class="number">1</span>:</span><br><span class="line">        index = (index + <span class="number">1</span>) % hashmap_length</span><br><span class="line">        cnt += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> cnt == hashmap_length:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Invalid Hashmap Length!&quot;</span>)</span><br><span class="line">            exit(<span class="number">0</span>)</span><br><span class="line">    hashmap[index] = ele</span><br><span class="line">    ASL += cnt + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate ASL_unsucc</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(hashmap_length):</span><br><span class="line">    index = i</span><br><span class="line">    cnt = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> hashmap[index] != -<span class="number">1</span>:</span><br><span class="line">        index = (index + <span class="number">1</span>) % hashmap_length</span><br><span class="line">        cnt += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> cnt == hashmap_length:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    ASL_unsucc += cnt + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">ASL /= <span class="built_in">len</span>(data)</span><br><span class="line">ASL_unsucc /= hashmap_length</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Result:&quot;</span>, hashmap)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;ASL:&quot;</span>, ASL)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;ASL_unsucc:&quot;</span>, ASL_unsucc)</span><br></pre></td></tr></table></figure>
+<h3 id="变量说明"><a href="#变量说明" class="headerlink" title="变量说明"></a>变量说明</h3><ul>
+<li>hashmap_length：散列表的长度</li>
+<li>data：原数据</li>
+<li>H：散列函数</li>
+<li>ASL：（查找成功的）平均查找长度</li>
+<li>ASL_unsucc：查找失败的平均查找长度</li>
 </ul>
 
     </div>
@@ -228,17 +215,20 @@
     
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
 
         
 
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2023/10/29/%E6%9D%82%E6%80%9D/" rel="next" title="杂思">
-      杂思 <i class="fa fa-chevron-right"></i>
+    <a href="/2023/10/29/%E6%9D%82%E6%80%9D/" rel="prev" title="杂思">
+      <i class="fa fa-chevron-left"></i> 杂思
     </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -297,7 +287,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E8%BF%9B%E5%BA%A6"><span class="nav-number">1.</span> <span class="nav-text">开发进度</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E8%AF%B4%E6%98%8E"><span class="nav-number">3.</span> <span class="nav-text">变量说明</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

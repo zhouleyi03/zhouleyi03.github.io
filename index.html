@@ -145,6 +145,82 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zhouleyi03.github.io/2023/11/04/%E5%9F%BA%E4%BA%8E%E9%99%A4%E7%95%99%E5%8F%96%E4%BD%99-%E7%BA%BF%E6%80%A7%E6%8E%A2%E6%B5%8B%E7%9A%84%E6%95%A3%E5%88%97%E8%A1%A8%E7%9A%84-ASL-%E8%AE%A1%E7%AE%97%E7%A8%8B%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhouleyi03">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhouleyi03's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/11/04/%E5%9F%BA%E4%BA%8E%E9%99%A4%E7%95%99%E5%8F%96%E4%BD%99-%E7%BA%BF%E6%80%A7%E6%8E%A2%E6%B5%8B%E7%9A%84%E6%95%A3%E5%88%97%E8%A1%A8%E7%9A%84-ASL-%E8%AE%A1%E7%AE%97%E7%A8%8B%E5%BA%8F/" class="post-title-link" itemprop="url">基于除留取余 & 线性探测的散列表的 ASL 计算程序</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-11-04 21:02:48 / Modified: 21:12:33" itemprop="dateCreated datePublished" datetime="2023-11-04T21:02:48+08:00">2023-11-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%85%B6%E4%BB%96/" itemprop="url" rel="index"><span itemprop="name">其他</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>做计软作业的时候遇到要求计算 ASL 的题目。作为 2023 年的人，用草稿纸一个个列写还是太原始了，于是我决定用 python 来计算答案。<br>虽然，为了验证算法的正确性，还是不得已手算了一遍……</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">hashmap_length = <span class="number">15</span></span><br><span class="line">data = [<span class="number">19</span>, <span class="number">14</span>, <span class="number">23</span>, <span class="number">1</span>, <span class="number">68</span>, <span class="number">20</span>, <span class="number">84</span>, <span class="number">27</span>, <span class="number">55</span>, <span class="number">11</span>, <span class="number">10</span>, <span class="number">79</span>]</span><br><span class="line">H = <span class="keyword">lambda</span> k: k % <span class="number">13</span></span><br><span class="line">hashmap = [-<span class="number">1</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(hashmap_length)]</span><br><span class="line">ASL = <span class="number">0</span></span><br><span class="line">ASL_unsucc = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># construct the hashmap &amp; calculate ASL</span></span><br><span class="line"><span class="keyword">for</span> ele <span class="keyword">in</span> data:</span><br><span class="line">    index = H(ele)</span><br><span class="line">    cnt = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> hashmap[index] != -<span class="number">1</span>:</span><br><span class="line">        index = (index + <span class="number">1</span>) % hashmap_length</span><br><span class="line">        cnt += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> cnt == hashmap_length:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Invalid Hashmap Length!&quot;</span>)</span><br><span class="line">            exit(<span class="number">0</span>)</span><br><span class="line">    hashmap[index] = ele</span><br><span class="line">    ASL += cnt + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate ASL_unsucc</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(hashmap_length):</span><br><span class="line">    index = i</span><br><span class="line">    cnt = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> hashmap[index] != -<span class="number">1</span>:</span><br><span class="line">        index = (index + <span class="number">1</span>) % hashmap_length</span><br><span class="line">        cnt += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> cnt == hashmap_length:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    ASL_unsucc += cnt + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">ASL /= <span class="built_in">len</span>(data)</span><br><span class="line">ASL_unsucc /= hashmap_length</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Result:&quot;</span>, hashmap)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;ASL:&quot;</span>, ASL)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;ASL_unsucc:&quot;</span>, ASL_unsucc)</span><br></pre></td></tr></table></figure>
+<h3 id="变量说明"><a href="#变量说明" class="headerlink" title="变量说明"></a>变量说明</h3><ul>
+<li>hashmap_length：散列表的长度</li>
+<li>data：原数据</li>
+<li>H：散列函数</li>
+<li>ASL：（查找成功的）平均查找长度</li>
+<li>ASL_unsucc：查找失败的平均查找长度</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://zhouleyi03.github.io/2023/10/29/%E6%9D%82%E6%80%9D/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -372,7 +448,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -380,6 +456,11 @@
             <a href="/categories/">
         <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
 </div>
